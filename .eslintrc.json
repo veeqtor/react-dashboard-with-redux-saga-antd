@@ -1,0 +1,33 @@
+{
+  "plugins": ["react-hooks"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018,
+    "ecmaFeatures": {
+      "jsx": true,
+      "es6": true,
+      "classes": true
+    }
+  },
+  "rules": {
+    "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

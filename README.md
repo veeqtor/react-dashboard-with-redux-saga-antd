@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Very Simple React Dashboard template built with Antd and has redux saga
 
 ## Available Scripts
 
