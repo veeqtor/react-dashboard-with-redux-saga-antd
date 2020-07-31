@@ -4,7 +4,7 @@ import { DesktopOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
 const { Sider } = Layout;
-// const { SubMenu } = Menu;
+const { SubMenu } = Menu;
 
 interface IDashboardSideBarProps {
   currentRoute: string;
@@ -18,13 +18,33 @@ const SideBar = (props: IDashboardSideBarProps): React.ReactElement => {
   const onCollapse = (): void => {
     setCollapsed(!collapsed);
   };
-
+  console.log(currentRoute);
   const sidebarMenuItems = [
     {
       title: 'Overview',
       route: 'overview',
       icon: DesktopOutlined,
       active: currentRoute === 'overview',
+    },
+  ];
+
+  const subMenuItems = [
+    {
+      mainTitle: 'Sessions',
+      menus: [
+        {
+          title: 'All Sessions',
+          route: 'sessions/all',
+          icon: DesktopOutlined,
+          active: currentRoute === 'sessions/all',
+        },
+        {
+          title: 'My Sessions',
+          route: 'sessions',
+          icon: DesktopOutlined,
+          active: currentRoute === 'sessions',
+        },
+      ],
     },
   ];
 
@@ -46,15 +66,25 @@ const SideBar = (props: IDashboardSideBarProps): React.ReactElement => {
             </Menu.Item>
           );
         })}
-        {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-          <Menu.Item key="3">Tom</Menu.Item>
-          <Menu.Item key="4">Bill</Menu.Item>
-          <Menu.Item key="5">Alex</Menu.Item>
-        </SubMenu>
-        <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-          <Menu.Item key="6">Team 1</Menu.Item>
-          <Menu.Item key="8">Team 2</Menu.Item>
-        </SubMenu> */}
+
+        {subMenuItems.map((item, i) => {
+          return (
+            <SubMenu key={i} icon={<UserOutlined />} title={item.mainTitle}>
+              {item.menus.map((menu, i) => {
+                return (
+                  <Menu.Item
+                    key={i}
+                    onClick={(): void => {
+                      changePageHandler(menu.route);
+                    }}
+                  >
+                    {menu.title}
+                  </Menu.Item>
+                );
+              })}
+            </SubMenu>
+          );
+        })}
       </Menu>
     </Sider>
   );

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
-
+import { connect } from 'react-redux';
 import { Switch, match } from 'react-router-dom';
+
 import ProtectedRoute from '../../../routes/privateRoutes';
 import DashboardLayout from '../../Layouts/DashboardLayout';
 import { getDashBoardRoutes } from '../../../routes/dashboard';
 import { selectNavigationState } from '../../../store/reducers/navigation';
-import { connect } from 'react-redux';
 import { goToNextPage } from '../../../store/actions/navigation';
 import { IApplicationRootState } from '../../../types';
 import { getCurrentRoute } from '../../../utils';

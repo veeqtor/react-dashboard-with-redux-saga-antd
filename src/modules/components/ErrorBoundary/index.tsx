@@ -6,8 +6,8 @@ interface IErrorBoundaryState {
   hasError: boolean;
   eventId: string;
 }
-const { SENTRY_DSN } = process.env;
-Sentry.init({ dsn: SENTRY_DSN });
+const { REACT_APP_SENTRY_DSN } = process.env;
+Sentry.init({ dsn: REACT_APP_SENTRY_DSN });
 
 export default class ErrorBoundary extends React.Component<{}, IErrorBoundaryState> {
   state = { hasError: false, eventId: '' };

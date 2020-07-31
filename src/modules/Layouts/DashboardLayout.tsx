@@ -27,10 +27,6 @@ const DashboardLayout = (props: IDashboardLayoutProps): React.ReactElement => {
         <Layout>
           <DashboardHeader />
           <DashboardLayout.ContentWrapper>
-            <DashboardLayout.Breadcrumb separator=">">
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </DashboardLayout.Breadcrumb>
             <DashboardLayout.Content>{children}</DashboardLayout.Content>
           </DashboardLayout.ContentWrapper>
           <DashboardFooter />

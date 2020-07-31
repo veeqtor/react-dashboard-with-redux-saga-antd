@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import SEO from '../../components/SEO';
+import SEO from '../../../components/SEO';
 
 export interface IOverviewProp {
   title: string;
