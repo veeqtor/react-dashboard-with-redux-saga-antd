@@ -13,7 +13,7 @@ export default {
   component: withSuspense(data),
   exact: false,
   authenticationPath: '/login',
-  restrictedPath: '/dashboards',
+  restrictedPath: '/dashboard',
   isAllowed: true,
 };
 
@@ -22,7 +22,7 @@ const getDashBoardRoutes = (path: string): IProtectedRouteProps[] => {
     {
       path: `${path}/overview`,
       component: withSuspense({
-        page: 'Overview',
+        page: 'Dashboard/Overview',
         data: {
           title: 'Dashboard - Overview',
         },

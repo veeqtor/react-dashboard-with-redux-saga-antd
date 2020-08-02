@@ -9,4 +9,9 @@ const getCurrentRoute = (pathname: string, defaultPath: string): string => {
   return current;
 };
 
-export { getCurrentRoute };
+const currentView = window.location.href
+  .replace(new RegExp(`${window.location.origin}/|/$`, 'g'), '')
+  .trim()
+  .split('/')[1];
+
+export { getCurrentRoute, currentView };

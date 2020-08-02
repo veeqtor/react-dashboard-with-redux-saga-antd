@@ -1,18 +1,25 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router-dom';
 import auth from '../utils/auth';
 
-export const UnProtectedRoute: React.FC<RouteProps> = (props) => {
-  const { location } = props;
+export const UnProtectedRoute: React.FC<RouteProps> = ({ component: Component, ...rest }: RouteProps) => {
   const isAuthenticated = auth.isAuthenticated();
-
+  if (!Component) return null;
+  let redirectPath: string | undefined;
   if (isAuthenticated) {
-    const renderComponent = () => <Redirect to={{ pathname: '/dashboard', state: { from: location } }} />;
-    return <Route {...props} component={renderComponent} render={undefined} />;
-  } else {
-    return <Route {...props} />;
+    redirectPath = '/dashboard/overview';
   }
+  return (
+    <Route
+      {...rest}
+      render={(renderProps): React.ReactNode => {
+        if (redirectPath) {
+          return <Redirect to={{ pathname: redirectPath, state: { from: renderProps.location } }} />;
+        }
+        return <Component {...renderProps} />;
+      }}
+    />
+  );
 };
 
 export default UnProtectedRoute;

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import * as React from 'react';
-import { Switch, Redirect, Route } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 
 import dashboard from './dashboard';
 import login from './login';
@@ -20,7 +18,7 @@ const Routes = (): React.ReactElement => {
       {protectedRoutes.map((elm, i) => {
         return <ProtectedRoute key={i} {...elm} />;
       })}
-      <Route exact path="*" render={() => <Redirect to="/404" />} />
+      <Redirect to="/login" />
     </Switch>
   );
 };

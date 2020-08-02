@@ -1,64 +1,103 @@
 import * as React from 'react';
 import { Layout, Menu } from 'antd';
-import { DesktopOutlined, UserOutlined } from '@ant-design/icons';
+import { DesktopOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
+import { colors } from '../../../styles/variables.style';
+
 const { Sider } = Layout;
-// const { SubMenu } = Menu;
 
 interface IDashboardSideBarProps {
-  currentRoute: string;
   changePageHandler: Function;
+  collapsed: boolean;
+  collapsedWidth: number;
+  handleOnBreakpoint: (broken: boolean) => void;
 }
 
 const SideBar = (props: IDashboardSideBarProps): React.ReactElement => {
-  const { changePageHandler, currentRoute } = props;
-  const [collapsed, setCollapsed] = React.useState(false);
+  const { changePageHandler, collapsed, handleOnBreakpoint, collapsedWidth } = props;
+  const [currentRoute, setCurrentRoute] = React.useState('overview');
 
-  const onCollapse = (): void => {
-    setCollapsed(!collapsed);
+  const logout = (): void => {
+    console.log('Logged Out');
   };
+
+  React.useEffect(() => {
+    const currentView = window.location.href
+      .replace(new RegExp(`${window.location.origin}/|/$`, 'g'), '')
+      .trim()
+      .split('/')[1];
+    setCurrentRoute(currentView);
+  }, [currentRoute]);
 
   const sidebarMenuItems = [
     {
       title: 'Overview',
       route: 'overview',
       icon: DesktopOutlined,
-      active: currentRoute === 'overview',
+      active: currentRoute === 'overview' || '',
+    },
+    {
+      title: 'Profile',
+      route: 'profile',
+      icon: UserOutlined,
+      active: currentRoute === 'profile' || '',
     },
   ];
 
   return (
-    <Sider width={240} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <SideBar.Wrapper
+      width={240}
+      collapsible
+      trigger={null}
+      collapsed={collapsed}
+      breakpoint="lg"
+      collapsedWidth={collapsedWidth}
+      onBreakpoint={handleOnBreakpoint}
+    >
       <SideBar.Logo />
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-        {sidebarMenuItems.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <Menu.Item
-              key={i}
-              icon={<Icon />}
-              onClick={(): void => {
-                changePageHandler(item.route);
-              }}
-            >
-              {item.title}
-            </Menu.Item>
-          );
-        })}
-        {/* <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-          <Menu.Item key="3">Tom</Menu.Item>
-          <Menu.Item key="4">Bill</Menu.Item>
-          <Menu.Item key="5">Alex</Menu.Item>
-        </SubMenu>
-        <SubMenu key="sub2" icon={<TeamOutlined />} title="Team">
-          <Menu.Item key="6">Team 1</Menu.Item>
-          <Menu.Item key="8">Team 2</Menu.Item>
-        </SubMenu> */}
-      </Menu>
-    </Sider>
+      <SideBar.MenuWrapper>
+        <SideBar.Menu defaultSelectedKeys={[currentRoute]} mode="inline">
+          {sidebarMenuItems.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <SideBar.MenuItem
+                key={i}
+                icon={<Icon />}
+                onClick={(): void => {
+                  changePageHandler(item.route);
+                }}
+                currentroute={item.active.toString()}
+              >
+                <span className="sidebar-text">
+                  {item.active} {item.title}
+                </span>
+              </SideBar.MenuItem>
+            );
+          })}
+        </SideBar.Menu>
+
+        <SideBar.Menu mode="inline">
+          <SideBar.MenuItem key="logout" onClick={logout}>
+            <LogoutOutlined />
+            <span className="sidebar-text">Log Out</span>
+          </SideBar.MenuItem>
+        </SideBar.Menu>
+      </SideBar.MenuWrapper>
+    </SideBar.Wrapper>
   );
 };
+
+SideBar.Wrapper = styled(Sider)`
+  background: ${colors.DARKER_GRAY};
+`;
+
+SideBar.MenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 89vh;
+`;
 
 SideBar.Logo = styled.div`
   height: 32px;
@@ -66,4 +105,40 @@ SideBar.Logo = styled.div`
   margin: 16px;
 `;
 
-export default SideBar;
+SideBar.Menu = styled(Menu)`
+  border-right: unset;
+  & :hover {
+    color: ${colors.WHITE};
+    background: ${colors.BLACK};
+  }
+
+  & .ant-menu-item {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    height: 55px;
+
+    &::after {
+      border-right: unset;
+    }
+  }
+
+  & .ant-menu-item-selected {
+    color: ${colors.WHITE};
+    background-color: ${colors.BLACK} !important;
+  }
+
+  & .sidebar-text {
+    color: ${colors.WHITE};
+  }
+`;
+
+SideBar.MenuItem = styled(Menu.Item)<{ currentroute?: string }>`
+  ${({ currentroute }): string =>
+    !!currentroute
+      ? ` border-right: 2px solid ${colors.PRIMARY_HOVER};
+          background: ${colors.BLACK};
+          `
+      : ''}
+`;
+
+export default React.memo(SideBar);
