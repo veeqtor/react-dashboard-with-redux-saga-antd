@@ -2,20 +2,20 @@ import * as React from 'react';
 import styled from 'styled-components';
 import SEO from '../../../components/SEO';
 
-export interface IOverviewProp {
+export interface IProfileProp {
   title: string;
 }
 
-const Overview = (props: IOverviewProp): React.ReactElement => {
+const Profile = (props: IProfileProp): React.ReactElement => {
   const { title } = props;
   return (
     <>
       <SEO title={title} />
-      <Overview.Wrapper>Overview</Overview.Wrapper>
+      <Profile.Wrapper>Profile</Profile.Wrapper>
     </>
   );
 };
 
-Overview.Wrapper = styled.div``;
+Profile.Wrapper = styled.div``;
 
-export default Overview;
+export default Profile;

@@ -1,94 +1,103 @@
 import * as React from 'react';
 import { Layout, Menu } from 'antd';
-import { DesktopOutlined, UserOutlined } from '@ant-design/icons';
+import { DesktopOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
+import { colors } from '../../../styles/variables.style';
+
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 interface IDashboardSideBarProps {
-  currentRoute: string;
   changePageHandler: Function;
+  collapsed: boolean;
+  collapsedWidth: number;
+  handleOnBreakpoint: (broken: boolean) => void;
 }
 
 const SideBar = (props: IDashboardSideBarProps): React.ReactElement => {
-  const { changePageHandler, currentRoute } = props;
-  const [collapsed, setCollapsed] = React.useState(false);
+  const { changePageHandler, collapsed, handleOnBreakpoint, collapsedWidth } = props;
+  const [currentRoute, setCurrentRoute] = React.useState('overview');
 
-  const onCollapse = (): void => {
-    setCollapsed(!collapsed);
+  const logout = (): void => {
+    console.log('Logged Out');
   };
-  console.log(currentRoute);
+
+  React.useEffect(() => {
+    const currentView = window.location.href
+      .replace(new RegExp(`${window.location.origin}/|/$`, 'g'), '')
+      .trim()
+      .split('/')[1];
+    setCurrentRoute(currentView);
+  }, [currentRoute]);
+
   const sidebarMenuItems = [
     {
       title: 'Overview',
       route: 'overview',
       icon: DesktopOutlined,
-      active: currentRoute === 'overview',
+      active: currentRoute === 'overview' || '',
     },
-  ];
-
-  const subMenuItems = [
     {
-      mainTitle: 'Sessions',
-      menus: [
-        {
-          title: 'All Sessions',
-          route: 'sessions/all',
-          icon: DesktopOutlined,
-          active: currentRoute === 'sessions/all',
-        },
-        {
-          title: 'My Sessions',
-          route: 'sessions',
-          icon: DesktopOutlined,
-          active: currentRoute === 'sessions',
-        },
-      ],
+      title: 'Profile',
+      route: 'profile',
+      icon: UserOutlined,
+      active: currentRoute === 'profile' || '',
     },
   ];
 
   return (
-    <Sider width={240} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <SideBar.Wrapper
+      width={240}
+      collapsible
+      trigger={null}
+      collapsed={collapsed}
+      breakpoint="lg"
+      collapsedWidth={collapsedWidth}
+      onBreakpoint={handleOnBreakpoint}
+    >
       <SideBar.Logo />
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-        {sidebarMenuItems.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <Menu.Item
-              key={i}
-              icon={<Icon />}
-              onClick={(): void => {
-                changePageHandler(item.route);
-              }}
-            >
-              {item.title}
-            </Menu.Item>
-          );
-        })}
+      <SideBar.MenuWrapper>
+        <SideBar.Menu defaultSelectedKeys={[currentRoute]} mode="inline">
+          {sidebarMenuItems.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <SideBar.MenuItem
+                key={i}
+                icon={<Icon />}
+                onClick={(): void => {
+                  changePageHandler(item.route);
+                }}
+                currentroute={item.active.toString()}
+              >
+                <span className="sidebar-text">
+                  {item.active} {item.title}
+                </span>
+              </SideBar.MenuItem>
+            );
+          })}
+        </SideBar.Menu>
 
-        {subMenuItems.map((item, i) => {
-          return (
-            <SubMenu key={i} icon={<UserOutlined />} title={item.mainTitle}>
-              {item.menus.map((menu, i) => {
-                return (
-                  <Menu.Item
-                    key={i}
-                    onClick={(): void => {
-                      changePageHandler(menu.route);
-                    }}
-                  >
-                    {menu.title}
-                  </Menu.Item>
-                );
-              })}
-            </SubMenu>
-          );
-        })}
-      </Menu>
-    </Sider>
+        <SideBar.Menu mode="inline">
+          <SideBar.MenuItem key="logout" onClick={logout}>
+            <LogoutOutlined />
+            <span className="sidebar-text">Log Out</span>
+          </SideBar.MenuItem>
+        </SideBar.Menu>
+      </SideBar.MenuWrapper>
+    </SideBar.Wrapper>
   );
 };
+
+SideBar.Wrapper = styled(Sider)`
+  background: ${colors.DARKER_GRAY};
+`;
+
+SideBar.MenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 89vh;
+`;
 
 SideBar.Logo = styled.div`
   height: 32px;
@@ -96,4 +105,40 @@ SideBar.Logo = styled.div`
   margin: 16px;
 `;
 
-export default SideBar;
+SideBar.Menu = styled(Menu)`
+  border-right: unset;
+  & :hover {
+    color: ${colors.WHITE};
+    background: ${colors.BLACK};
+  }
+
+  & .ant-menu-item {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    height: 55px;
+
+    &::after {
+      border-right: unset;
+    }
+  }
+
+  & .ant-menu-item-selected {
+    color: ${colors.WHITE};
+    background-color: ${colors.BLACK} !important;
+  }
+
+  & .sidebar-text {
+    color: ${colors.WHITE};
+  }
+`;
+
+SideBar.MenuItem = styled(Menu.Item)<{ currentroute?: string }>`
+  ${({ currentroute }): string =>
+    !!currentroute
+      ? ` border-right: 2px solid ${colors.PRIMARY_HOVER};
+          background: ${colors.BLACK};
+          `
+      : ''}
+`;
+
+export default React.memo(SideBar);
